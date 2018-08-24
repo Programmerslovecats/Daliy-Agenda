@@ -9,11 +9,100 @@ namespace ConsoleApp1
 {
     class Program
     {
-        static void Main2(string[] args)
+        #region    //算法练习：求出1~9，中间任意添加+，-， ，三种情况时能够得到的所有等于100的公式，例如：123-45-67+89
+        /// <summary>
+        /// 比较好的解决方式
+        /// </summary>
+        public class OneOneZero
         {
-            //SecondMethod();
+            public static void Main1(String[] args)
+            {
+                int[] result = new int[8];
+                getResult(0, result);
+            }
+            //使用递归求出3^8种情况  
+            public static void getResult(int index, int[] result)
+            {
+                if (index == 8)
+                {
+                    showResult(result);//根据数组的取值转换成表达式，且求值，这方法有待改进，写的很乱  
+                    return;
+                }
+                //每个空有三种可能，0,1,2  
+                for (int i = 0; i < 3; i++)
+                {
+                    result[index] = i;
+                    getResult(index + 1, result);
+                    result[index] = 0; //恢复原来的状态  
+                }
+            }
+            public static void showResult(int[] result)
+            {
+
+                int sum = 0;
+                //默认在第一个数字，即1之前是"+"号，方便编程而已  
+                char operateChar = '+';
+                String[] source = new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+                //最终的表达式，最好用StringBuilder，在非多线程的情况下，字符串拼接的性能，StringBuilder最好，  
+                //当然用StringBuffer或者单纯的String也可以  
+                StringBuilder expression = new StringBuilder();
+                //用于记录临时的数字，因为参与运算的数字可能是几位的数字，所以也需要拼接  
+                StringBuilder number = new StringBuilder();
+                //先加入第一个字符，即1  
+                number.Append(source[0]);
+
+                expression.Append(source[0]);
+
+                for (int i = 0; i < result.Length; i++)
+                {
+                    if (result[i] == 0)
+                    {//如果为0，表示数字合并  
+                        number.Append(source[i + 1]);
+                        expression.Append(source[i + 1]);
+                    }
+                    else if (result[i] == 1)
+                    {
+                        sum = calc(operateChar, sum, number);
+                        operateChar = '+';
+                        number.Append(source[i + 1]);
+                        expression.Append("+").Append(source[i + 1]);
+                    }
+                    else if (result[i] == 2)
+                    {
+                        sum = calc(operateChar, sum, number);
+                        operateChar = '-';
+                        number.Append(source[i + 1]);
+                        expression.Append("-").Append(source[i + 1]);
+                    }
+                }
+                sum = calc(operateChar, sum, number);
+                if (sum == 100)
+                {
+                    Console.WriteLine(expression.ToString() + "=100");
+                    Console.ReadLine();
+                }
+            }
+            public static int calc(char operateChar, int sum, StringBuilder number)
+            {
+                if (operateChar == '+')
+                {
+                    sum += int.Parse(number.ToString());
+                    number.Remove(0, number.Length);
+                }
+                else if (operateChar == '-')
+                {
+                    sum -= int.Parse(number.ToString());
+                    number.Remove(0, number.Length);
+                }
+                return sum;
+            }
+
+        }
+        public static void Main1()
+        {
+           // SecondMethod();
             int a = 5;
-            Console.WriteLine(a*3/2);
+            Console.WriteLine(a * 3 / 2);
             Console.ReadLine();
         }
         /// <summary>
@@ -58,98 +147,10 @@ namespace ConsoleApp1
             Console.ReadLine();
         }
 
-    /// <summary>
-    /// 比较好的解决方式
-    /// </summary>
-    public class OneOneZero
-    {
-        public static void Main1(String[] args)
-        {
-            int[] result = new int[8];
-            getResult(0,result);
-        }
-        //使用递归求出3^8种情况  
-        public static void getResult(int index, int[] result)
-        {
-            if (index == 8)
-            {
-                showResult(result);//根据数组的取值转换成表达式，且求值，这方法有待改进，写的很乱  
-                return;
-            }
-            //每个空有三种可能，0,1,2  
-            for (int i = 0; i < 3; i++)
-            {
-                result[index] = i;
-                getResult(index + 1, result);
-                result[index] = 0; //恢复原来的状态  
-            }
-        }
-        public static void showResult(int[] result)
-        {
+        #endregion
 
-            int sum = 0;
-            //默认在第一个数字，即1之前是"+"号，方便编程而已  
-            char operateChar = '+';
-            String[] source = new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
-            //最终的表达式，最好用StringBuilder，在非多线程的情况下，字符串拼接的性能，StringBuilder最好，  
-            //当然用StringBuffer或者单纯的String也可以  
-            StringBuilder expression = new StringBuilder();
-            //用于记录临时的数字，因为参与运算的数字可能是几位的数字，所以也需要拼接  
-            StringBuilder number = new StringBuilder();
-            //先加入第一个字符，即1  
-            number.Append(source[0]);
-
-            expression.Append(source[0]);
-
-            for (int i = 0; i < result.Length; i++)
-            {
-                if (result[i] == 0)
-                {//如果为0，表示数字合并  
-                    number.Append(source[i + 1]);
-                    expression.Append(source[i + 1]);
-                }
-                else if (result[i] == 1)
-                {
-                    sum = calc(operateChar, sum, number);
-                    operateChar = '+';
-                    number.Append(source[i + 1]);
-                    expression.Append("+").Append(source[i + 1]);
-                }
-                else if (result[i] == 2)
-                {
-                    sum = calc(operateChar, sum, number);
-                    operateChar = '-';
-                    number.Append(source[i + 1]);
-                    expression.Append("-").Append(source[i + 1]);
-                }
-            }
-            sum = calc(operateChar, sum, number);
-            if (sum == 100)
-            {
-                Console.WriteLine(expression.ToString()+"=100");
-                Console.ReadLine();
-            }
-        }
-        public static int calc(char operateChar, int sum, StringBuilder number)
-        {
-            if (operateChar == '+')
-            {
-                sum += int.Parse(number.ToString());
-                number.Remove(0, number.Length);
-            }
-            else if (operateChar == '-')
-            {
-                sum -= int.Parse(number.ToString());
-                number.Remove(0, number.Length);
-            }
-            return sum;
-        }
-
-    }
-
-
-    //算法练习：求以下表达式的值，写出您想到的一种或几种实现方法： 1-2+3-4+……+m
-    public class Test01
+        #region  //算法练习：求以下表达式的值，写出您想到的一种或几种实现方法： 1-2+3-4+……+m
+        public class Test01
     {
         public static void Main1(string[] s)
         {
@@ -190,9 +191,10 @@ namespace ConsoleApp1
         }
  
     }
+        #endregion
 
-    //算法练习：求出1~100所有数相加的和
-    public class Test02
+        #region//算法练习：求出1~100所有数相加的和
+        public class Test02
     {
         public static void Main1(string[] A)
         {
@@ -225,15 +227,14 @@ namespace ConsoleApp1
 
 
     }
+        #endregion
 
-
-    //算法练习：冒泡排序
-
-    public class Test03
+        #region //算法练习：冒泡排序
+        public class Test03
     {
           
 
-        private static void Main(string[] A)
+        private static void Main1(string[] A)
         {
             List<int> list = new List<int> {3,1,4,5,6,8,7,9,2 };
                 int[] array = { 1, 5, 5, 9, 63, 4, 7, 8, 2 };
@@ -303,12 +304,10 @@ namespace ConsoleApp1
 
 
     }
+        #endregion
 
-
-
-
-    //算法练习：快速排序
-    public class Test04
+        #region    //算法练习：快速排序
+        public class Test04
     {
             public static void Main1(string[] A)
             {
@@ -347,10 +346,10 @@ namespace ConsoleApp1
                 return i;
             }
         }
+        #endregion
 
-
-        //算法练习：取得两个数组的中位数， 中位数定义:把数组进行从小到大的排序，之后判断长度为偶数还是奇数，奇数的中位数就是中间的值，偶数的中位数就是中间两个值相加/2
-    public class Test05
+        #region   //算法练习：取得两个数组的中位数， 中位数定义:把数组进行从小到大的排序，之后判断长度为偶数还是奇数，奇数的中位数就是中间的值，偶数的中位数就是中间两个值相加/2
+        public class Test05
         {
 
             public static void Main1(string[] DSS)
@@ -392,9 +391,9 @@ namespace ConsoleApp1
                 return pivot;
             }
         }
+        #endregion
 
-
-        //算法练习：给定两个整数，被除数dividend和除数divisor。将两数相除，要求不使用乘法、除法和mod运算符。返回被除数dividend除以除数divisor得到的商。
+        #region //算法练习：给定两个整数，被除数dividend和除数divisor。将两数相除，要求不使用乘法、除法和mod运算符。返回被除数dividend除以除数divisor得到的商。
         /*
          Int8 //等于byte,
          Int16 //等于short, 占2个字节. -32768  ~ 32767
@@ -404,10 +403,10 @@ namespace ConsoleApp1
         public class Test06
         {
 
-            public static void Main1(string[] DSS)
+            public static void Main(string[] DSS)
             {
-                int A = -2147483648;
-                int B = 1;
+                int A = 5;
+                int B = 2;
                 int C= divide(A, B);
                 Console.WriteLine(C);
                 Console.ReadLine();
@@ -415,16 +414,17 @@ namespace ConsoleApp1
 
             public static int divide(int A, int B)
             {
-                //M是int32的最大数，m是int32的最小数
-                 int M = (int)(Math.Pow(2, 31) - 1), m = -M - 1;
-                // 溢出处理
+                //M是int32的最大数-2147483648，m是int32的最小数2147483647
+                int M = (int)(Math.Pow(2, 31) - 1), m = -M - 1;
+                // 溢出处理 
                 if (B == 0 || (A == m && B == -1))
                 {
                     return M;
                 }
-                // 求结果的符号
-                int sign = ((A > 0) ^ (B > 0)) ? -1 : 1;
-                // 求绝对值，为防止溢出使用long
+                // 确定符号 
+                int sign = ((A > 0)|(B > 0)) ? -1 : 1;
+
+                // 求绝对值，为防止溢出使用long，因为-2147483648 转正会超出范围
                 long dvd = Math.Abs((long)A);
                 long dvs = Math.Abs((long)B);
                 // 记录结果
@@ -437,7 +437,7 @@ namespace ConsoleApp1
                     long tmp = dvs;
                     // 记录商的大小
                     long mul = 1;
-                    while (dvd >= (tmp << 1))
+                    while (dvd >= (tmp << 1))//被除数大于或等于除数左移一位时（*2），将tmp和mul同时左移（*2）
                     {
                         tmp <<= 1;
                         mul <<= 1;
@@ -447,9 +447,15 @@ namespace ConsoleApp1
                     // 修正结果
                     result += (int)mul;
                 }
-                return result * sign;
+                if (sign.ToString().IndexOf("-") == 0)
+                    result = -result;
+                return result;
+               // return result * sign;
             }
         }
+        #endregion
+
+
 
 
     }
