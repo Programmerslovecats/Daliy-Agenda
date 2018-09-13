@@ -284,7 +284,7 @@ namespace ConsoleApp1
             /// <typeparam name="Tkey">返回值的类型</typeparam>
             /// <param name="array">泛型数组</param>
             /// <param name="condition">Func有返回值的委托</param>
-            public static void OrderBy<T,Tkey>(T[]array,Func<T,Tkey>condition)where Tkey:IComparable
+            public static void OrderBy<T,key>(T[]array,Func<T,key>condition)where key:IComparable
         {
             for (int r = 0; r < array.Length; r++)
             {
@@ -403,7 +403,7 @@ namespace ConsoleApp1
         public class Test06
         {
 
-            public static void Main(string[] DSS)
+            public static void Main1(string[] DSS)
             {
                 int A = 5;
                 int B = 2;
@@ -455,8 +455,85 @@ namespace ConsoleApp1
         }
         #endregion
 
+        #region    //算法练习：找出无序数组中的最长连续序列的长度：例如数组[1, 23, 2, 300, 3, 9, 4, 5, 90]，最长连续序列为：1，2，3，4，5，因此返回长度为 5。
+        public class Test07
+        {
+            public static void Main1()
+            {
+                int[] A = {-1,-2,-3,-4,-5,1 };
+
+                int B=ReturnLength(A);
+                Console.WriteLine(B);
+                Console.ReadLine();
+
+            }
+
+            private static int ReturnLength(int[] a)
+            {
+                int b = 1;
+                int J = 0;
+                Array.Sort(a);
+                for (int i = 0; i < a.Length-1; i++)
+                {
+                    if (Math.Abs(a[i]) + 1 ==Math.Abs(a[i + 1])|| Math.Abs(a[i]) - 1 == Math.Abs(a[i + 1]))
+                        b++;
+                    else
+                    {
+                        if(b>J)
+                        J = b;
+
+                        b = 1;
+                    }
+                }
+                return J>b?J:b;
+            }
+        }
+        #endregion
+
+        #region//算法练习：给定一个非负整数数组，您最初定位在数组的第一个索引处。 数组中的每个元素表示该位置的最大跳转长度。您的目标是以最小跳跃次数到达最后一个索引。
+        /*例：
+         * 输入： [2,3,1,1,4]输出： 2
+         * 说明：到达最后一个索引的最小跳转次数为2。 
+         * 从索引0跳转1步到1，然后从最后一个索引跳3步。
+         * 注意：您可以假设您始终可以访问最后一个索引。
+        */
+        public static void Main()
+        {
+            int[] A = {1,2,1,0,3};
+            int C=Skip(A);
+            Console.WriteLine(C);
+            Console.ReadLine();
+        }
+
+        private static int Skip(int[] nums)
+        {
+            //数组长度小于2返回0
+            if (nums.Length < 2) return 0;
+            int begin = 0, end = 0;
+            int step = 0;
+            while (true)
+            {
+                int max = 0;
+
+                for (int i = begin; i <= end; i++) 
+                    max = Math.Max(nums[i] + i, max);//取得最大长度
+
+                if (max <= end) return 0;//这说明第一个索引元素是0，那么我们无法进行跳转，之间return 0；
+                if (max >= nums.Length - 1) return step + 1;//当我们最大数大于数组长度-1时，说明到达最后一位，参数记录加1结束
+                begin = end + 1;//跳转后到达的位置
+                end = max;//将最大的长度给end
+                step++;//记录参数
+            }
+            //数组[2,3,1,1,4]
+            //当我们第一次循环 nums[i]的参数是2加上索引0，max是0，因此max得到值为2，对比一下max小于数组长度5-1
+            //因此，我们继续进行移动，起始的位置改变位最终位置+1，这样就是下一个位置的元素也就是3
+            //把最大数记录一下，并赋值给最终位置。
+        }
 
 
+
+
+        #endregion
 
     }
 }
